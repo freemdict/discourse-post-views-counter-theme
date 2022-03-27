@@ -6,18 +6,15 @@ function initWithApi(api) {
   api.reopenWidget("post-meta-data", {
     html(attrs) {
       const infos = this._super(...arguments);
-
       const postInfosIdx = infos.findIndex(i => {
         return i.properties && i.properties.className == "post-infos";
       });
-
       if (postInfosIdx < 0) return infos;
 
       const childs = infos[postInfosIdx].children || [];
       const postDateIdx = childs.findIndex(i => {
-        return i.properties && i.properties.className == "post-info post-date";
+        return Object.getPrototypeOf(i) && Object.getPrototypeOf(i).tagName && Object.getPrototypeOf(i).tagName == "div.post-info.post-date";
       });
-
       if (postDateIdx < 0) return infos;
 
       const reads = attrs.readCount || 0;
@@ -28,9 +25,7 @@ function initWithApi(api) {
         },
         [reads, iconNode("far-eye")]
       );
-
       childs.insertAt(postDateIdx, views);
-
       infos[postInfosIdx].children = childs;
 
       return infos;
